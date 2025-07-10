@@ -91,7 +91,7 @@ Build a CI/CD pipeline that:
              port: 80
              targetPort: 8080
    ```
-7. Update the Jenkins file with the environment block to add the APP_NAME env variable and the EKS env variables.
+7. Update the Jenkins file with the environment block to add the APP_NAME env variable and the AWS plugin env variables
    ```bash
       environment {
           KUBECONFIG = "${env.WORKSPACE}/kubeconfig"
