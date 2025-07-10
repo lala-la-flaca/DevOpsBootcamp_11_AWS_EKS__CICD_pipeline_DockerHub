@@ -76,22 +76,22 @@ Build a CI/CD pipeline that:
                 imagePullPolicy: Always
                 ports:
                   - containerPort: 8080
-  ```
+   ```
 6. Open the service file and replace the java-maven-app with an ENV variable ($APP_NAME)
-```bash
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: $APP_NAME
-    spec:
-      selector:
-        app: $APP_NAME
-      ports:
-        - protocol: TCP
-          port: 80
-          targetPort: 8080
-```
-6. Update the Jenkins file with the environment block to add the APP_NAME env variable and the EKS env variables.
+   ```bash
+       apiVersion: v1
+       kind: Service
+       metadata:
+         name: $APP_NAME
+       spec:
+         selector:
+           app: $APP_NAME
+         ports:
+           - protocol: TCP
+             port: 80
+             targetPort: 8080
+   ```
+7. Update the Jenkins file with the environment block to add the APP_NAME env variable and the EKS env variables.
    ```bash
       environment {
           KUBECONFIG = "${env.WORKSPACE}/kubeconfig"
