@@ -169,10 +169,13 @@ For this Demo, the secret file is a file that is only created once; therefore, w
      kubectl get secret
    ```
 4. Add the secret to the deployment.yaml file
+
    ```bash
      spec:
         imagePullSecrets:
           - name: my-registry-key
-  ```
-5. Commit changes
+     ```
+6. Commit changes
+7. Execute pipeline
+   
    
