@@ -45,11 +45,17 @@ Build a CI/CD pipeline that:
 ## ⚙️ Project Configuration
 ### Creating Deployment and Service YAML files
 1. In your java-maven-app repository (forked from the Java Increment Version Demo), create a new feature branch.
+   
 2. Create a new directory named kubernetes.
+   
 3. In the kubernetes directory, create two files:
    *  deployment.yaml
    *  service.yaml
+
+   <img src="https://github.com/lala-la-flaca/DevOpsBootcamp_11_AWS_EKS__CICD_pipeline_DockerHub/blob/main/Img/1%20create%20a%20new%20kubernetes%20folder%20and%20deployment%20and%20servicel%20yaml.png" width=800 />
+   
 4. Copy the baseline configurations into both files.
+   
 5. In deployment.yaml, update the configuration to use dynamic environment variables for the image name and app name:
    ```bash
       apiVersion: apps/v1
@@ -77,7 +83,9 @@ Build a CI/CD pipeline that:
                 ports:
                   - containerPort: 8080
    ```
-6. In service.yaml, replace static values with the $APP_NAME environment variable:
+   <img src="https://github.com/lala-la-flaca/DevOpsBootcamp_11_AWS_EKS__CICD_pipeline_DockerHub/blob/main/Img/2%20setting%20a%20dynamic%20container%20image.png" width=800 />
+   
+8. In service.yaml, replace static values with the $APP_NAME environment variable:
    ```bash
        apiVersion: v1
        kind: Service
@@ -91,7 +99,9 @@ Build a CI/CD pipeline that:
              port: 80
              targetPort: 8080
    ```
-7. In your Jenkinsfile, add the following environment variables under the environment block:
+   <img src="https://github.com/lala-la-flaca/DevOpsBootcamp_11_AWS_EKS__CICD_pipeline_DockerHub/blob/main/Img/3%20Replacing%20labels%20and%20app%20name%20with%20ENV.png" width=800 />
+   
+9. In your Jenkinsfile, add the following environment variables under the environment block:
    ```bash
       environment {
           KUBECONFIG = "${env.WORKSPACE}/kubeconfig"
@@ -101,7 +111,9 @@ Build a CI/CD pipeline that:
   
       }
    ```
-8. In the deploy stage of your Jenkins pipeline, use the envsubst command to substitute environment variables and apply the YAML files:
+   <img src="https://github.com/lala-la-flaca/DevOpsBootcamp_11_AWS_EKS__CICD_pipeline_DockerHub/blob/main/Img/4%20defining%20app%20name%20as%20env.png" width=800 />
+   
+10. In the deploy stage of your Jenkins pipeline, use the envsubst command to substitute environment variables and apply the YAML files:
 
     <details><summary><strong> envsubst </strong></summary>
     The `envsubst` command replaces environment variables in a file or string with their current values. This is commonly used to inject runtime values into Kubernetes manifests or other configuration templates.
@@ -140,21 +152,28 @@ Build a CI/CD pipeline that:
                 }
             }
 ```
+<img src="https://github.com/lala-la-flaca/DevOpsBootcamp_11_AWS_EKS__CICD_pipeline_DockerHub/blob/main/Img/5%20passing%20the%20deployment%20file%20and%20srvice%20to%20pipeline.png" width=800 />
 
 ### Installing Gettext-base on Jenkins
 1. SSH into the Jenkins server (hosted on your DigitalOcean droplet):
    ```bash
       ssh root@
    ```
+   <img src="https://github.com/lala-la-flaca/DevOpsBootcamp_11_AWS_EKS__CICD_pipeline_DockerHub/blob/main/Img/6%20ssh%20to%20jenkins.png" width=800 />
+   
 3. Access to Jenkins container as the root user.
    ```bash
       docker exec -u 0 -it bash
    ```
+   <img src="https://github.com/lala-la-flaca/DevOpsBootcamp_11_AWS_EKS__CICD_pipeline_DockerHub/blob/main/Img/7%20entering%20jenkins%20ocntainer%20as%20root.png" width=800/>
+   
 5. Install gettext-base
    ```bash
      apt-get update
      apt-get install gettext-base
    ```
+   <img src="https://github.com/lala-la-flaca/DevOpsBootcamp_11_AWS_EKS__CICD_pipeline_DockerHub/blob/main/Img/8%20installing%20gettext-base%20envsubst.png" width=800 />
+   
 6. Exit the container
 
 ### Creating a Secret for DockerHub
@@ -164,6 +183,8 @@ In this demo, the Docker Hub secret is created manually from the host machine an
    ```bash
    kubectl get nodes
    ```
+   <img src="" width=800 />
+   
 2. Create Secret
    ```bash
      kubectl create secret docker-registry my-registry-key \
@@ -171,10 +192,14 @@ In this demo, the Docker Hub secret is created manually from the host machine an
      --docker-username=xxxx \
      --docker-password=xxxxx
    ```
+   <img src="https://github.com/lala-la-flaca/DevOpsBootcamp_11_AWS_EKS__CICD_pipeline_DockerHub/blob/main/Img/9%20cretaing%20secret%20locally%20as%20its%20one%20time%20in%20this%20case.png" width=800 />
+   
 3. Verify that the secret was created
    ```bash
      kubectl get secret
    ```
+   
+   
 4. Add the secret to the deployment.yaml file
 
    ```bash
@@ -182,7 +207,11 @@ In this demo, the Docker Hub secret is created manually from the host machine an
         imagePullSecrets:
           - name: my-registry-key
      ```
+  <img src="https://github.com/lala-la-flaca/DevOpsBootcamp_11_AWS_EKS__CICD_pipeline_DockerHub/blob/main/Img/secret.png" width=800 />
+   
 6. Commit the changes
 7. Execute pipeline.
+8. Check deployment and service
+   <img src="https://github.com/lala-la-flaca/DevOpsBootcamp_11_AWS_EKS__CICD_pipeline_DockerHub/blob/main/Img/16%20checking%20deployment%20and%20servcie.png" width=800 />
    
    
