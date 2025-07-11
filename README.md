@@ -163,7 +163,7 @@ Build a CI/CD pipeline that:
    
 3. Access to the Jenkins container as the root user.
    ```bash
-      docker exec -u 0 -it bash
+      docker exec -u 0 -it 6db6fdd7ed8f bash
    ```
    <img src="https://github.com/lala-la-flaca/DevOpsBootcamp_11_AWS_EKS__CICD_pipeline_DockerHub/blob/main/Img/7%20entering%20jenkins%20ocntainer%20as%20root.png" width=800/>
    
