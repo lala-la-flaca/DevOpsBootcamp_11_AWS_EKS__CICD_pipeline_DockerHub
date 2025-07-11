@@ -26,6 +26,7 @@ Build a CI/CD pipeline that:
 - Kubectl is installed and configured to connect to the Kubernetes cluster.
 - Jenkins server is running
 - We are going to use the Java-Maven-App repository from the previous demo.
+- The EKS cluster from the previous demo is running.
   
 ## 🎯 Features
 - Create k8 manifest files for Deployment and Service configuration.
@@ -42,15 +43,14 @@ Build a CI/CD pipeline that:
 
 
 ## ⚙️ Project Configuration
-
-
-
 ### Creating Deployment and Service YAML files
-1. Create a New branch to your Java-Maven-App repository, which forks from the Java Increment version demo.
-2. Create a new Kubernetes directory.
-3. Create the Deployment and Service file.
-4. Open the deployment file and secret file, and copy the baseline file.
-5. Open the deployment file and set a dynamic Image name through an ENV Variable ($IMAGE_NAME), and replace the java-maven-app with an ENV variable ($APP_NAME)
+1. In your java-maven-app repository (forked from the Java Increment Version Demo), create a new feature branch.
+2. Create a new directory named kubernetes.
+3. In the kubernetes directory, create two files:
+   *  deployment.yaml
+   *  service.yaml
+4. Copy the baseline configurations into both files.
+5. In deployment.yaml, update the configuration to use dynamic environment variables for the image name and app name:
    ```bash
       apiVersion: apps/v1
       kind: Deployment
@@ -77,7 +77,7 @@ Build a CI/CD pipeline that:
                 ports:
                   - containerPort: 8080
    ```
-6. Open the service file and replace the java-maven-app with an ENV variable ($APP_NAME)
+6. In service.yaml, replace static values with the $APP_NAME environment variable:
    ```bash
        apiVersion: v1
        kind: Service
@@ -91,7 +91,7 @@ Build a CI/CD pipeline that:
              port: 80
              targetPort: 8080
    ```
-7. Update the Jenkins file with the environment block to add the APP_NAME env variable and the AWS plugin env variables
+7. In your Jenkinsfile, add the following environment variables under the environment block:
    ```bash
       environment {
           KUBECONFIG = "${env.WORKSPACE}/kubeconfig"
@@ -101,10 +101,10 @@ Build a CI/CD pipeline that:
   
       }
    ```
-8. Update Jenkinsfile on the deploy block to  apply the deployment and service yaml files. To pass the deployment and service yaml files to the Jenkinsfile, we are going to use the envsubst command line.
+8. In the deploy stage of your Jenkins pipeline, use the envsubst command to substitute environment variables and apply the YAML files:
 
     <details><summary><strong> envsubst </strong></summary>
-    envsubst is a command-line utility that performs variable substitution on text by replacing environment variables within a string or file with their corresponding values. It's commonly used to dynamically generate configuration files or other text-based artifacts by incorporating environment variables into templates. Here we are passing the deployment and service yaml file to envsubs
+    The `envsubst` command replaces environment variables in a file or string with their current values. This is commonly used to inject runtime values into Kubernetes manifests or other configuration templates.
     </details>
 ```bash
     stage("deploy") {
@@ -142,20 +142,27 @@ Build a CI/CD pipeline that:
 ```
 
 ### Installing Gettext-base on Jenkins
-1. SSH to the droplet to access the Jenkins server
-2. Access to Jenkins container as root user.
-3. Install gettext-base
+1. SSH into the Jenkins server (hosted on your DigitalOcean droplet):
+   ```bash
+      ssh root@
+   ```
+3. Access to Jenkins container as the root user.
+   ```bash
+      docker exec -u 0 -it bash
+   ```
+5. Install gettext-base
    ```bash
      apt-get update
      apt-get install gettext-base
    ```
-4. Exit the container
+6. Exit the container
 
 ### Creating a Secret for DockerHub
-For this Demo, the secret file is a file that is only created once; therefore, we do not want to include it in the pipeline. We are going to create the Secret from the host. Each NameSpace has its  Secret file
+In this demo, the Docker Hub secret is created manually from the host machine and is not included in the pipeline. You must create the secret once for each namespace where it is needed.
+
 1. Ensure your EKS cluster is running.
    ```bash
-   kubectl get node
+   kubectl get nodes
    ```
 2. Create Secret
    ```bash
@@ -175,7 +182,7 @@ For this Demo, the secret file is a file that is only created once; therefore, w
         imagePullSecrets:
           - name: my-registry-key
      ```
-6. Commit changes
-7. Execute pipeline
+6. Commit the changes
+7. Execute pipeline.
    
    
