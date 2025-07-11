@@ -157,11 +157,11 @@ Build a CI/CD pipeline that:
 ### Installing Gettext-base on Jenkins
 1. SSH into the Jenkins server (hosted on your DigitalOcean droplet):
    ```bash
-      ssh root@
+      ssh root@198.199.70.18
    ```
    <img src="https://github.com/lala-la-flaca/DevOpsBootcamp_11_AWS_EKS__CICD_pipeline_DockerHub/blob/main/Img/6%20ssh%20to%20jenkins.png" width=800 />
    
-3. Access to Jenkins container as the root user.
+3. Access to the Jenkins container as the root user.
    ```bash
       docker exec -u 0 -it bash
    ```
